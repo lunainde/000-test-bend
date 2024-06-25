@@ -40,9 +40,7 @@ router.post("/signup", (req, res, next) => {
     imgUrl === "" ||
     headline === ""
   ) {
-    res
-      .status(400)
-      .json({ message: "Please provide the missing information" });
+    res.status(400).json({ message: "Please provide the missing information" });
     return;
   }
 
@@ -127,10 +125,10 @@ router.post("/login", (req, res, next) => {
 
       if (passwordCorrect) {
         // Deconstruct the user object to omit the password
-        const { _id, email, name, imgUrl, headline } = foundUser;
+        const { _id, email, name, imgUrl, headline, category, tags, siteUrl, about, country } = foundUser;
 
         // Create an object that will be set as the token payload
-        const payload = { _id, email, name, imgUrl, headline };
+        const payload = { _id, email, name, imgUrl, headline, category, tags, siteUrl, about, country };
 
         // Create a JSON Web Token and sign it
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
@@ -152,7 +150,7 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   console.log("diogo");
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and is made available on `req.payload`
-   console.log(`req.payload`, req.payload);
+  console.log(`req.payload`, req.payload);
 
   // Send back the token payload object containing the user data
   res.status(200).json(req.payload);
@@ -160,7 +158,17 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
 
 // PUT/UPDATE '/auth/update' => update user account
 router.put("/update", isAuthenticated, (req, res, next) => {
-  const { imgUrl, siteUrl, headline, country, about, email, name, category, tags } = req.body;
+  const {
+    imgUrl,
+    siteUrl,
+    headline,
+    country,
+    about,
+    email,
+    name,
+    category,
+    tags,
+  } = req.body;
   const userId = req.user._id;
   User.findByIdAndUpdate(
     userId,
