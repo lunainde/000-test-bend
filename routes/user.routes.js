@@ -103,31 +103,39 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   res.status(200).json(req.payload);
 });
 
+//-----------fetcheing from userController and Middleware--------
 // PUT /auth/update  - Update user account
-router.put("/update", isAuthenticated, (req, res, next) => {
-  const { imgUrl, name, siteUrl, tags, about, country, createdAt } = req.body;
-  const userId = req.user._id;
-
-  User.findByIdAndUpdate(
-    userId,
-    { imgUrl, name, siteUrl, tags, about, country, createdAt },
-    { new: true }
-  )
-    .then((updatedUser) => {
-      res.status(200).json(updatedUser);
-    })
-    .catch((err) => next(err));
-});
+router.put("/update", isAuthenticated, userController.updateUser); // <-- Change: moved to controller
 
 // DELETE /auth/delete  - Delete user account
-router.delete("/delete", isAuthenticated, (req, res, next) => {
-  const userId = req.user._id;
+router.delete("/delete", isAuthenticated, userController.deleteUser); // <-- Change: moved to controller
 
-  User.findByIdAndDelete(userId)
-    .then(() => {
-      res.status(200).json({ message: "User deleted successfully" });
-    })
-    .catch((err) => next(err));
-});
+//------------MOVED TO CONTROLER------------
+// // PUT /auth/update  - Update user account
+// router.put("/update", isAuthenticated, (req, res, next) => {
+//   const { imgUrl, name, siteUrl, category, tags, about, country, createdAt } = req.body;
+//   const userId = req.user._id;
+
+//   User.findByIdAndUpdate(
+//     userId,
+//     { imgUrl, name, siteUrl, category, tags, about, country, createdAt },
+//     { new: true }
+//   )
+//     .then((updatedUser) => {
+//       res.status(200).json(updatedUser);
+//     })
+//     .catch((err) => next(err));
+// });
+
+// // DELETE /auth/delete  - Delete user account
+// router.delete("/delete", isAuthenticated, (req, res, next) => {
+//   const userId = req.user._id;
+
+//   User.findByIdAndDelete(userId)
+//     .then(() => {
+//       res.status(200).json({ message: "User deleted successfully" });
+//     })
+//     .catch((err) => next(err));
+// });
 
 module.exports = router;
