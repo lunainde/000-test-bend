@@ -1,6 +1,5 @@
 //server/middleware/jwt.middleware.js
 
-//---------------V1----------------
 const { expressjwt: jwt } = require("express-jwt");
 
 // Instantiate the JWT token validation middleware

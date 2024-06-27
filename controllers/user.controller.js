@@ -1,5 +1,6 @@
 //server/controllers/user.controller.js
 const User = require("../models/User.model");
+const jwt = require("jsonwebtoken");
 
 // Function to get user by ID
 exports.getUserById = async (userId) => {
@@ -37,14 +38,57 @@ exports.getRecentStartups = async (req, res, next) => {
 
 // Update User
 exports.updateUser = async (req, res, next) => {
-  try {
-    const userId = req.payload._id; // Fixed user ID retrieval
-    const updatedData = req.body;
-    const updatedUser = await User.findByIdAndUpdate(userId, updatedData, { new: true });
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    next(error);
-  }
+  const {
+    imgUrl,
+    siteUrl,
+    headline,
+    country,
+    about,
+    email,
+    name,
+    category,
+    tags,
+  } = req.body;
+  const userId = req.payload._id;
+
+  User.findByIdAndUpdate(
+    userId,
+    { imgUrl, name, siteUrl, tags, about, country, email, headline, category },
+    { new: true }
+  )
+    .then((updatedUser) => {
+      const {
+        _id,
+        email,
+        name,
+        imgUrl,
+        headline,
+        category,
+        tags,
+        siteUrl,
+        about,
+        country,
+      } = updatedUser;
+      const payload = {
+        _id,
+        email,
+        name,
+        imgUrl,
+        headline,
+        category,
+        tags,
+        siteUrl,
+        about,
+        country,
+      };
+      const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+        algorithm: "HS256",
+        expiresIn: "6h",
+      });
+
+      res.status(200).json({ authToken: authToken, user: payload });
+    })
+    .catch((err) => next(err));
 };
 
 // Delete User

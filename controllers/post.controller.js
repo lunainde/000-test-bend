@@ -45,9 +45,6 @@ exports.getAllPosts = async (req, res, next) => {
 exports.getRecentPosts = async (req, res, next) => {
   try {
     const posts = await Post.find().sort({ createdAt: -1 }).limit(3).populate("user");
-
-    //const postsByStartups = posts.filter(post => post.user.category == "startup")
-
     res.status(200).json(posts);
   } catch (error) {
     next(error);
@@ -58,10 +55,10 @@ exports.getRecentPosts = async (req, res, next) => {
 exports.updatePost = async (req, res, next) => {
   try {
     const postId = req.params.postId;
-    const { imgUrl, title, tag, content } = req.body;
+    const { imgUrl, title, tags, content } = req.body;
     const updatedPost = await Post.findByIdAndUpdate(
       postId,
-      { imgUrl, title, tag, content },
+      { imgUrl, title, tags, content },
       { new: true }
     );
     res.status(200).json(updatedPost);

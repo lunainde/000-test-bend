@@ -6,7 +6,7 @@ const postSchema = new Schema(
     title: {
       type: String,
       required: [true, "Title is required."],
-      maxlength: [140, "Title cannot exceed 150 characters."],
+      maxlength: [200, "Title cannot exceed 200 characters."],
     },
     tags: {
       type: [String],
@@ -38,4 +38,8 @@ const postSchema = new Schema(
     timestamps: true,
   }
 );
+// Adding indexes for optimization
+postSchema.index({ tags: 1 });
+postSchema.index({ user: 1 });
+
 module.exports = model("Post", postSchema);
