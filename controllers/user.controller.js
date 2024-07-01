@@ -1,5 +1,6 @@
 //server/controllers/user.controller.js
 const User = require("../models/User.model");
+const Post = require("../models/Post.model");
 const jwt = require("jsonwebtoken");
 
 // Function to get user by ID
@@ -24,19 +25,7 @@ exports.getRecentStartups = async (req, res, next) => {
   }
 };
 
-// // UPDATE USER
-//   exports.updateUser = async (req, res, next) => {
-//     try {
-//       const { userId } = req.params;
-//       const updatedData = req.body;
-//       const updatedUser = await User.findByIdAndUpdate(userId, updatedData, { new: true });
-//       res.status(200).json(updatedUser);
-//     } catch (error) {
-//       next(error);
-//     }
-//   };
-
-// Update User
+// UPDATE USER
 exports.updateUser = async (req, res, next) => {
   const {
     imgUrl,
@@ -91,12 +80,93 @@ exports.updateUser = async (req, res, next) => {
     .catch((err) => next(err));
 };
 
-// Delete User
+// DELETE User
 exports.deleteUser = async (req, res, next) => {
   try {
     const userId = req.payload._id; // Fixed user ID retrieval
     await User.findByIdAndDelete(userId);
     res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET User's BOOKMARKED posts
+exports.getUserBookmarks = async (req, res, next) => {
+  try {
+    const userId = req.payload._id; // Get user ID from the authenticated payload
+    const user = await User.findById(userId).populate('bookmarks'); // Find user and populate bookmarks
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user.bookmarks); // Return the populated bookmarks
+  } catch (error) {
+    next(error);
+  }
+};
+
+// FAVORITES => ADD STARTUP TO USER'S 
+exports.addFavoriteStartup = async (req, res, next) => {
+  const userId = req.payload._id; // Get user id from autenticated paylad
+  const { startupId } = req.body; // get startup id from requested body
+
+  try {
+    const user = await User.findById(userId); // find user by id
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" }); 
+    }
+
+    // ADD STARTUP ID TO FAVORITES IF NOT ALREADY INCLUDED
+    if (!user.favoriteStartups.includes(startupId)) {
+      user.favoriteStartups.push(startupId);
+      await user.save(); // SAVE THE UPDATED USER
+    }
+
+    res.status(200).json({ message: "Startup added to favorites" }); // RETURN SUCCESS MESSAGE
+  } catch (error) {
+    next(error);
+  }
+};
+
+// FAVORITES => REMOVE A STARTUP FROM USER'S  
+exports.removeFavoriteStartup = async (req, res, next) => {
+  const userId = req.payload._id; // Get user id from autenticated paylad
+  const { startupId } = req.body; // get startup id from requested body
+
+  try {
+    const user = await User.findById(userId); //find user by id
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" }); 
+    }
+
+    // REMOVE STARTUP ID FROM FAVORITES
+    user.favoriteStartups = user.favoriteStartups.filter(
+      (id) => id.toString() !== startupId
+    );
+    await user.save(); // save updated user
+
+    res.status(200).json({ message: "Startup removed from favorites" }); 
+  } catch (error) {
+    next(error);
+  }
+};
+
+// FAVORITE =>GET USER'S FAV STARTUPS
+exports.getFavoriteStartups = async (req, res, next) => {
+  const userId = req.payload._id; // Get user id from autenticated paylad
+
+  try {
+    const user = await User.findById(userId).populate('favoriteStartups'); // find and populate fav
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" }); 
+    }
+
+    res.status(200).json(user.favoriteStartups); // return populated fav
   } catch (error) {
     next(error);
   }

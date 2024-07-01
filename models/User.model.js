@@ -1,7 +1,6 @@
 //server/models/User.model.js
 const { Schema, model } = require("mongoose");
 
-// TODO:
 const userSchema = new Schema(
   {
     imgUrl: String,
@@ -10,9 +9,8 @@ const userSchema = new Schema(
     country: String,
     about: {
       type: String,
-      maxlength: [140, "About cannot exceed 140 characters."],
+      maxlength: [200, "About cannot exceed 200 characters."],
     },
-    country: String,
     email: {
       type: String,
       required: [true, "Email is required."],
@@ -27,6 +25,7 @@ const userSchema = new Schema(
     name: {
       type: String,
       required: [true, "Name is required."],
+      trim: true,
     },
     category: {
       type: String,
@@ -46,13 +45,33 @@ const userSchema = new Schema(
         "nature-based",
         "refi",
         "transport",
+        "reform",
         "other",
       ],
     },
+    bookmarks: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Post",
+      },
+    ],
+    role: {
+      type: String,
+      enum: ["user", "admin"],
+      default: "user",
+    },
+    favoriteStartups: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );
+// indexes for optimization
+userSchema.index({ email: 1 });
 module.exports = model("User", userSchema);

@@ -18,6 +18,9 @@ app.use("/auth", authRoutes);
 const userRoutes = require("./routes/user.routes");
 app.use("/api/users", userRoutes);
 
+const likeRoutes = require('./routes/like.routes');
+app.use('/api', likeRoutes);
+
 //Errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 
