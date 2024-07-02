@@ -2,7 +2,7 @@
 
 const Post = require("../models/Post.model");
 const User = require("../models/User.model");
-const Like = require("../models/Like.model"); // IMPORT THE LIKE MODEL
+const Like = require("../models/Like.model"); //### IMPORT THE LIKE MODEL
 
 // CREATE/POST a new post
 exports.createPost = async (req, res, next) => {
@@ -174,6 +174,50 @@ exports.unbookmarkPost = async (req, res, next) => {
     await post.save();
 
     res.status(200).json({ message: "Post unbookmarked successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ### ADD LIKE POST FUNCTION
+exports.likePost = async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.payload._id;
+
+    const post = await Post.findById(postId);
+    const user = await User.findById(userId);
+
+    if (!post || !user) {
+      return res.status(404).json({ message: "Post or User not found" });
+    }
+
+    const existingLike = await Like.findOne({ itemId: postId, itemType: 'post', userId });
+
+    if (existingLike) {
+      return res.status(400).json({ message: "Post already liked" });
+    }
+
+    const like = await Like.create({ itemId: postId, itemType: 'post', userId });
+    res.status(201).json(like);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ### ADD UNLIKE POST FUNCTION
+exports.unlikePost = async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.payload._id;
+
+    const like = await Like.findOneAndDelete({ itemId: postId, itemType: 'post', userId });
+
+    if (!like) {
+      return res.status(404).json({ message: "Like not found" });
+    }
+
+    res.status(200).json({ message: "Post unliked successfully" });
   } catch (error) {
     next(error);
   }

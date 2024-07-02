@@ -39,13 +39,11 @@ router.post("/:postId/bookmark", isAuthenticated, postController.bookmarkPost);
 router.delete("/:postId/unbookmark", isAuthenticated, postController.unbookmarkPost);
 
 
+//-------------LIKE--------------
+//### ADD ROUTE FOR LIKING A POST
+router.post("/:postId/like", isAuthenticated, postController.likePost);
 
-
-// // LIKE------------------------
-// // POST '/api/posts/:postId/like' => for liking a post
-// router.post("/:postId/like", isAuthenticated, postController.likePost);
-
-// // DELETE '/api/posts/:postId/unlike' => for unliking a post
-// router.delete("/:postId/unlike", isAuthenticated, postController.unlikePost);
+//### ADD ROUTE FOR UNLIKING A POST
+router.delete("/:postId/unlike", isAuthenticated, postController.unlikePost);
 
 module.exports = router;
