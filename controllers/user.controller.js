@@ -16,7 +16,7 @@ exports.getUserById = async (userId) => {
 //GET LAST 3 RECENT USERS- STARTUP
 exports.getRecentStartups = async (req, res, next) => {
   try {
-    const users = await User.find({ category: "Startup" })
+    const users = await User.find({ category: "startup" })
       .sort({ createdAt: -1 })
       .limit(3);
     res.status(200).json(users);
@@ -93,9 +93,19 @@ exports.deleteUser = async (req, res, next) => {
 
 // GET User's BOOKMARKED posts
 exports.getUserBookmarks = async (req, res, next) => {
+  /*
+    This call currently receives post information from the posts that the user has bookmarked
+    These posts do not contain author information
+    This call should get Posts and not a user with populated posts (bookmarks)
+    The objective is to find Posts whose ID are inside the bookmarks array
+    Then return the POSTS (not the user with posts) and populate author inside each post
+
+
+  */
+
   try {
     const userId = req.payload._id; // Get user ID from the authenticated payload
-    const user = await User.findById(userId).populate('bookmarks'); // Find user and populate bookmarks
+    const user = await User.findById(userId).populate("bookmarks"); // Find user and populate bookmarks
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -107,7 +117,7 @@ exports.getUserBookmarks = async (req, res, next) => {
   }
 };
 
-// FAVORITES => ADD STARTUP TO USER'S 
+// FAVORITES => ADD STARTUP TO USER'S
 exports.addFavoriteStartup = async (req, res, next) => {
   const userId = req.payload._id; // Get user id from autenticated paylad
   const { startupId } = req.body; // get startup id from requested body
@@ -116,7 +126,7 @@ exports.addFavoriteStartup = async (req, res, next) => {
     const user = await User.findById(userId); // find user by id
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" }); 
+      return res.status(404).json({ message: "User not found" });
     }
 
     // ADD STARTUP ID TO FAVORITES IF NOT ALREADY INCLUDED
@@ -131,7 +141,7 @@ exports.addFavoriteStartup = async (req, res, next) => {
   }
 };
 
-// FAVORITES => REMOVE A STARTUP FROM USER'S  
+// FAVORITES => REMOVE A STARTUP FROM USER'S
 exports.removeFavoriteStartup = async (req, res, next) => {
   const userId = req.payload._id; // Get user id from autenticated paylad
   const { startupId } = req.body; // get startup id from requested body
@@ -140,7 +150,7 @@ exports.removeFavoriteStartup = async (req, res, next) => {
     const user = await User.findById(userId); //find user by id
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" }); 
+      return res.status(404).json({ message: "User not found" });
     }
 
     // REMOVE STARTUP ID FROM FAVORITES
@@ -149,7 +159,7 @@ exports.removeFavoriteStartup = async (req, res, next) => {
     );
     await user.save(); // save updated user
 
-    res.status(200).json({ message: "Startup removed from favorites" }); 
+    res.status(200).json({ message: "Startup removed from favorites" });
   } catch (error) {
     next(error);
   }
@@ -160,10 +170,10 @@ exports.getFavoriteStartups = async (req, res, next) => {
   const userId = req.payload._id; // Get user id from autenticated paylad
 
   try {
-    const user = await User.findById(userId).populate('favoriteStartups'); // find and populate fav
+    const user = await User.findById(userId).populate("favoriteStartups"); // find and populate fav
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" }); 
+      return res.status(404).json({ message: "User not found" });
     }
 
     res.status(200).json(user.favoriteStartups); // return populated fav

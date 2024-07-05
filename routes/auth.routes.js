@@ -61,41 +61,40 @@ router.post("/signup", (req, res, next) => {
   }
 
   // Check for DUPLICATED email
-  User.findOne({ email })
-    .then((foundUser) => {
-      // If the user with the same email already exists, send an error response
-      if (foundUser) {
-        res.status(400).json({ message: "User already exists." });
-        return;
-      }
-      // If email is unique, proceed to hash the password
-      const salt = bcrypt.genSaltSync(saltRounds);
-      const hashedPassword = bcrypt.hashSync(password, salt);
-      // Create the new user in the database
-      // We return a pending promise, which allows us to chain another then
+  User.findOne({ email }).then((foundUser) => {
+    // If the user with the same email already exists, send an error response
+    if (foundUser) {
+      res.status(400).json({ message: "User already exists." });
+      return;
+    }
+    // If email is unique, proceed to hash the password
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hashedPassword = bcrypt.hashSync(password, salt);
+    // Create the new user in the database
+    // We return a pending promise, which allows us to chain another then
 
-      return User.create({
-        email,
-        category,
-        tags,
-        siteUrl,
-        about,
-        country,
-        imgUrl,
-        headline,
-        password: hashedPassword,
-        name,
-      });
+    User.create({
+      email,
+      category,
+      tags,
+      siteUrl,
+      about,
+      country,
+      imgUrl,
+      headline,
+      password: hashedPassword,
+      name,
     })
-    .then((createdUser) => {
-      // Deconstruct the newly created user object to omit the password => never expose passwords publicly
-      const { email, name, _id } = createdUser;
-      // Create a new object that doesn't expose the password
-      const user = { email, name, _id };
-      // Send a json response containing the user object
-      res.status(201).json({ user: user });
-    })
-    .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+      .then((createdUser) => {
+        // Deconstruct the newly created user object to omit the password => never expose passwords publicly
+        const { email, name, _id } = createdUser;
+        // Create a new object that doesn't expose the password
+        const user = { email, name, _id };
+        // Send a json response containing the user object
+        res.status(201).json({ user: user });
+      })
+      .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+  });
 });
 // POST login - Verifies email and password and returns a JWT
 router.post("/login", (req, res, next) => {
