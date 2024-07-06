@@ -99,8 +99,6 @@ exports.getUserBookmarks = async (req, res, next) => {
     This call should get Posts and not a user with populated posts (bookmarks)
     The objective is to find Posts whose ID are inside the bookmarks array
     Then return the POSTS (not the user with posts) and populate author inside each post
-
-
   */
 
   try {

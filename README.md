@@ -5,27 +5,23 @@ Distributed under the GR33NBASE License.
 CONTACT - @gr33nbase - hello@gr33nbase.io
 Project Link:
 https://github.com/lunainde/041-final-fend
-https://github.com/lunainde/041-final-bend
 
 ## Table of Contents
 
-1. [Project Overview](#project-overview)
-2. [Features](#features)
-3. [Tech Stack](#tech-stack)
-4. [Getting Started](#getting-started)
-5. [Installation](#installation)
-6. [Usage](#usage)
-7. [API Endpoints](#api-endpoints)
-8. [Folder Structure](#folder-structure)
-9. [Contributing](#contributing)
-10. [License](#license)
-11. [Contact](#contact)
+1. License
+2. Contact
+3. Project Overview
+4. Features
+5. Tech Stack
+6. Getting Started
+7. Installation
+8. Folder Structure
 
-## Project Overview
+# Project Overview
 
 The MERN Startup and Posts Application is a full-stack web application built with the MERN (MongoDB, Express, React, Node.js) stack. It allows users to sign up, log in, and interact with posts and startup profiles. Users can like, bookmark, and share posts and favorite startup profiles. The application features user authentication and authorization using JWT tokens.
 
-## Features
+# Features
 
 - User Authentication (Sign Up, Log In, Log Out)
 - JWT Token-based Authentication
@@ -35,23 +31,24 @@ The MERN Startup and Posts Application is a full-stack web application built wit
 - Responsive Design
 - Error Handling and Validation
 
-## Tech Stack
+# Tech Stack
 
-- **Frontend:** React, Axios, Material-UI
-- **Backend:** Node.js, Express
-- **Database:** MongoDB
-- **Authentication:** JWT
-- **Cloud Storage:** Cloudinary (for image uploads)
+- Frontend: React, Axios, Material-UI
+- Backend: Node.js, Express
+- Database: MongoDB
+- Authentication: JWT
+- Cloud Storage: Cloudinary (for image uploads)
+- Text Editor: react-quill and quill
 
-## Getting Started
+# Getting Started
 
 To get a local copy up and running, follow these simple steps.
 
-### Prerequisites
+# Prerequisites
 
 - Node.js (v14 or higher)
 - MongoDB
-- npm or yarn
+- npm
 
 # Install client dependencies
 
@@ -66,3 +63,30 @@ npm run dev
 
 cd ../client
 npm start
+
+# Folder Structure
+
+│
+├── client/
+│ ├── public/
+│ ├── src/
+│ │ ├── components/
+│ │ │ ├── ...
+├── pages/
+│ │ │ ├── ...
+│ │ ├── App.js
+│ │ ├── index.js
+│ │ └── ...
+│ └── ...
+│
+├── server/
+│ ├── controllers/
+│ │ └── ...
+│ ├── db/
+│ ├── models/
+│ │ └── ...
+│ ├── routes/
+│ │ └── posts.js
+│ ├── server.js
+│ └── ...
+└── ...
